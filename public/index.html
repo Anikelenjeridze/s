@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Answer Display</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      background-color: #f9f9f9;
+    }
+    .answer-container {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #fff;
+      border-left: 4px solid #007bff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .timestamp {
+      color: #666;
+      font-size: 0.8em;
+      margin-top: 10px;
+    }
+    .refresh-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .refresh-btn:hover {
+      background-color: #0069d9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Latest Submitted Answer</h1>
+    <p>This page displays the most recent data submitted to the backend.</p>
+    
+    <div class="answer-container">
+      <p>Current answer: <span id="answer">Loading...</span></p>
+      <p class="timestamp" id="timestamp"></p>
+    </div>
+    
+    <button class="refresh-btn" onclick="fetchData()">Refresh Data</button>
+  </div>
+
+  <script>
+    // API URL - Change this to your EC2 instance IP when deployed
+    const API_URL = 'http://localhost:3001';
+    
+    // Function to fetch the latest data
+    async function fetchData() {
+      try {
+        const response = await fetch(`${API_URL}/api/get-answer`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        
+        const data = await response.json();
+        
+        // Update the answer span with the retrieved data
+        document.getElementById('answer').textContent = data.data;
+        
+        // Update timestamp if available
+        if (data.timestamp) {
+          document.getElementById('timestamp').textContent = `Last updated: ${new Date(data.timestamp).toLocaleString()}`;
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        document.getElementById('answer').textContent = 'Error loading data';
+      }
+    }
+    
+    // Fetch data when the page loads
+    document.addEventListener('DOMContentLoaded', fetchData);
+  </script>
+</body>
+</html>
