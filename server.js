@@ -58,3 +58,8 @@ app.get('/api/get-answer', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
+
+// cd ~/deployment-assignment/s
+// ls
+// npm install
+// npm run dev
